@@ -1,18 +1,16 @@
-function isValidEvent(event) {
-  if (!event.name || !event.date || !event.category) {
-    return { valid: false, message: "Missing required event fields" };
+const createEvent = (req, res) => {
+  const { name, date, category } = req.body;
+
+  if (!name || !date || !category) {
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
-  const eventDate = new Date(event.date);
+  const eventDate = new Date(date);
   const now = new Date();
-
-//   // BUG: Should not allow past dates, but currently allows them
-  if (isNaN(eventDate.getTime())) {
-    return { valid: false, message: "Invalid date format" };
+  if (eventDate < now) {
+    return res.status(400).json({ error: 'Event date must be in the future' });
   }
-   
 
-  return { valid: true, message: "Event is valid" };
-}
-
-module.exports = { isValidEvent };
+  // Proceed to save event (mocked or real)
+  return res.status(200).json({ message: 'Event created successfully' });
+};
